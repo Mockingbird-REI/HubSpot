@@ -6,7 +6,7 @@ The Client Class is your Friend.  Start here for pretty much everything
 ``` Python
 from typing import List
 
-from HubSpot.CRM import Client, DEAL, HubSpotObject
+from HubSpot.CRM import Client, DEAL, HubSpotObject, NOTE
 
 client = client(APP_TOKEN)
 ```
