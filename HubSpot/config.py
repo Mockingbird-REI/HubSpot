@@ -1,0 +1,32 @@
+from .CRM import (COMPANY, CONTACT, DEAL, LINE_ITEM, TICKET, _hs_engagement)
+
+ASSOCIATION_MATRIX = (
+        (CONTACT, COMPANY),
+        (COMPANY, CONTACT),
+        (DEAL, CONTACT),
+        (CONTACT, DEAL),
+        (DEAL, COMPANY),
+        (COMPANY, DEAL),
+        (COMPANY, _hs_engagement),
+        (_hs_engagement, COMPANY),
+        (CONTACT, _hs_engagement),
+        (_hs_engagement, CONTACT),
+        (DEAL, _hs_engagement),
+        (_hs_engagement, DEAL),
+        (COMPANY, COMPANY),
+        (COMPANY, COMPANY),
+        (CONTACT, TICKET),
+        (TICKET, CONTACT),
+        (TICKET, _hs_engagement),
+        (_hs_engagement, TICKET),
+        (DEAL, LINE_ITEM),
+        (LINE_ITEM, DEAL),
+        (None, None),
+        (None, None),
+        (None, None),
+        (None, None),
+        (COMPANY, TICKET),
+        (TICKET, COMPANY),
+        (DEAL, TICKET),
+        (TICKET, DEAL)
+)
