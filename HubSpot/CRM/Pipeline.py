@@ -37,10 +37,10 @@ class Pipeline:
 
 
 class PipelineFactory:
-    def __init__(self, interface: Interface, api_version: int = 3):
+    def __init__(self, interface: Interface, base_url: str, api_version: int = 3):
         self.interface = interface
         self.api_version = api_version
-        self.base_url = f"/v{self.api_version}/pipelines"
+        self.base_url = f"{base_url}/v{self.api_version}/pipelines"
 
     def get_all(self, hs_class: Type["HubSpotObject"]) -> Generator["Pipeline", None, None]:
         """

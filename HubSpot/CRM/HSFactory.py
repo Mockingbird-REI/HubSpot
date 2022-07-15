@@ -3,14 +3,15 @@ import json
 from typing import Dict, Generator, List, Union
 
 from HubSpot import Interface
-from . import HubSpotObject
+from .HSObjects import HubSpotObject
 
 
 class HSFactory:
 
-    def __init__(self, interface: Interface, association):
+    def __init__(self, interface: Interface, association, base_url: str):
         self.interface = interface
         self.association = association
+        self.base_url = base_url
 
     def list_all(self, hs_class: HubSpotObject.__class__, limit: int = 10, properties: List = None,
                  _after: Union[str, None] = None) -> Generator[HubSpotObject, None, None]:
@@ -25,7 +26,7 @@ class HSFactory:
         :return: A Generator of HubSpot Objects
         """
 
-        endpoint = f"/v{hs_class.api_version}/objects/{hs_class.object_type}"
+        endpoint = f"{self.base_url}/v{hs_class.api_version}/objects/{hs_class.object_type}"
         params = {
             "limit": limit,
         }
@@ -63,7 +64,7 @@ class HSFactory:
         if required_props != [""] and not all([required_prop in kwargs for required_prop in required_props]):
             raise Exception(f"Missing Required Properties.  Required properties: {required_props}")
 
-        endpoint = f"/v{hs_class.api_version}/objects/{hs_class.object_type}"
+        endpoint = f"{self.base_url}/v{hs_class.api_version}/objects/{hs_class.object_type}"
         data = json.dumps(
             {"properties": kwargs}
         )
@@ -82,7 +83,7 @@ class HSFactory:
         :return: an object representing the HS object
         """
 
-        response = self.interface.call(f"{hs_class.endpoint}/{hs_id}")
+        response = self.interface.call(f"{self.base_url}/v{hs_class.api_version}/{hs_class.object_type}/{hs_id}")
 
         return hs_class(self.interface, self.association, response.json())
 
@@ -99,7 +100,7 @@ class HSFactory:
         https://developers.hubspot.com/docs/api/crm/search#filter-search-results
         """
 
-        url = f"/v{hs_class.api_version}/objects/{hs_class.object_type}/search"
+        url = f"{self.base_url}/v{hs_class.api_version}/objects/{hs_class.object_type}/search"
         if _after is not None:
             filters.update({"after": _after})
         data = json.dumps(filters)

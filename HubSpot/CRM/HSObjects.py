@@ -1,8 +1,9 @@
 from dataclasses import dataclass, make_dataclass, field
 import json
-from typing import Dict, List, NoReturn, Any, ClassVar
+from typing import Dict, List, NoReturn, Any, ClassVar, Union
 
 from ..Interface import Interface
+from ..Files.File import File
 
 
 @dataclass
@@ -15,14 +16,14 @@ class HubSpotObject:
     archived: bool = field(default=False)
     api_version: ClassVar[int] = 3
     object_type: ClassVar[str] = field(default=None)
-    endpoint: str = f"/v{api_version}/{object_type}"
+    endpoint: str = f"/crm/v{api_version}/{object_type}"
     hs_id: int = field(init=False)
 
     def __post_init__(self):
         self.__dict__.update(self._data['properties'])
         self.archived = self._data['archived']
         self.hs_id = self._data['id']
-        self.endpoint = f"/v{self.api_version}/objects/{self.object_type}/{self.hs_id}"
+        self.endpoint = f"/crm/v{self.api_version}/objects/{self.object_type}/{self.hs_id}"
 
     def __str__(self):
         return f"<{self.friendly_name} {self.hs_id}>"
@@ -53,7 +54,7 @@ class HubSpotObject:
 
         self.archived = True
 
-    def associate(self, hs_object: "HubSpotObject", *args, **kwargs) -> NoReturn:
+    def associate(self, hs_object: Union["HubSpotObject", File], *args, **kwargs) -> NoReturn:
         """
         Creates an association from this object to the hs_object
 
@@ -96,7 +97,7 @@ CONTACT = make_dataclass("Contact",
 
 
 DEAL = make_dataclass("Deal",
-                      [("friendly_name", str, field(default="Deal")),
+                      [("friendly_name", str, "Deal"),
                        ("object_type", ClassVar[str], "deals")],
                       bases=(HubSpotObject, ))
 
@@ -164,3 +165,34 @@ TASK = make_dataclass("Task",
                       [("friendly_name", str, field(default="Task")),
                        ("object_type", str, "tasks")],
                       bases=(_hs_engagement, ))
+
+ASSOCIATION_MATRIX = (
+        (CONTACT, COMPANY),
+        (COMPANY, CONTACT),
+        (DEAL, CONTACT),
+        (CONTACT, DEAL),
+        (DEAL, COMPANY),
+        (COMPANY, DEAL),
+        (COMPANY, _hs_engagement),
+        (_hs_engagement, COMPANY),
+        (CONTACT, _hs_engagement),
+        (_hs_engagement, CONTACT),
+        (DEAL, _hs_engagement),
+        (_hs_engagement, DEAL),
+        (COMPANY, COMPANY),
+        (COMPANY, COMPANY),
+        (CONTACT, TICKET),
+        (TICKET, CONTACT),
+        (TICKET, _hs_engagement),
+        (_hs_engagement, TICKET),
+        (DEAL, LINE_ITEM),
+        (LINE_ITEM, DEAL),
+        (None, None),
+        (None, None),
+        (None, None),
+        (None, None),
+        (COMPANY, TICKET),
+        (TICKET, COMPANY),
+        (DEAL, TICKET),
+        (TICKET, DEAL)
+)

@@ -45,13 +45,4 @@ new_note = client.new_object(NOTE, new_note_properties)
 new_deal.associate(new_note)
 ```
 
-# ToDo
-* Better Error Handling
-* Logging
-* Improved Doc Strings
-* Improved Documentation
-* Batch Requests
-* Custom Objects
-* Unit Testing
-
 Developed on Python 3.8

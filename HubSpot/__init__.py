@@ -1,1 +1,1 @@
-from HubSpot.Interface import Interface
+from .Client import Client

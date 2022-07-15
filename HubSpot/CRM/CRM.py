@@ -1,31 +1,28 @@
-from typing import Dict,Generator, NoReturn, Type
+from typing import Dict, Generator, NoReturn, Type
 
-from .. import Interface
-from . import HubSpotObject, Associations, HSFactory
+from .HSObjects import HubSpotObject
+from .Associations import Associations
+from .HSFactory import HSFactory
 from .Pipeline import Pipeline, PipelineFactory
 
 
-class Client:
-    def __init__(self, access_token: str):
+class CRM:
+    def __init__(self, interface):
         """
         :param access_token: App Access token
         """
 
-        self.interface = Interface(
-            access_token=access_token,
-            base_url="https://api.hubspot.com/crm"
-        )
-
-        self.association = Associations(self.interface)
-        self.pipeline_factory = PipelineFactory(self.interface)
-        self.hs_factory = HSFactory(self.interface, self.association)
+        base_url = "/crm"
+        self.association = Associations(interface, base_url)
+        self.pipeline_factory = PipelineFactory(interface, base_url)
+        self.hs_factory = HSFactory(interface, self.association, base_url)
 
     # HS Objects
     def list_objects(self, hs_class: Type[HubSpotObject], *args, **kwargs) -> Generator[Type[HubSpotObject], None, None]:
         for hs_object in self.hs_factory.list_all(hs_class, *args, **kwargs):
             yield hs_object
 
-    def get_objects(self, hs_class: Type[HubSpotObject], hs_id: int) -> HubSpotObject:
+    def get_object(self, hs_class: Type[HubSpotObject], hs_id: int) -> HubSpotObject:
         return self.hs_factory.get(hs_class, hs_id)
 
     def new_object(self, hs_class: Type[HubSpotObject], **kwargs) -> HubSpotObject:
@@ -71,5 +68,3 @@ class Client:
     def list_pipelines(self, hs_class: Type[HubSpotObject]) -> Generator[Pipeline, None, None]:
         for pipeline in self.pipeline_factory.get_all(hs_class):
             yield pipeline
-
-
