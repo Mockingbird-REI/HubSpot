@@ -1,3 +1,4 @@
+import logging
 from requests import Session, Response
 from time import sleep
 
@@ -17,6 +18,7 @@ class Interface:
         self.rate_limit = rate_limit
 
     def call(self, endpoint: str, method: str = "GET", **kwargs) -> Response:
+        logging.debug(f"callling ({method}) {endpoint}")
         sleep(1/self.rate_limit)
 
         url = f"{self.base_url}{endpoint}"
