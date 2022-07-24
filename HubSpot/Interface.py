@@ -19,7 +19,7 @@ class Interface:
 
     def call(self, endpoint: str, method: str = "GET", **kwargs) -> Response:
         logging.debug(f"callling ({method}) {endpoint}")
-        sleep(1/self.rate_limit)
+        sleep(1)
 
         url = f"{self.base_url}{endpoint}"
         if "files" in kwargs.keys():
