@@ -3,7 +3,7 @@ from requests import Session, Response
 
 class Interface:
 
-    def __init__(self, access_token: str, base_url: str):
+    def __init__(self, access_token: str, base_url: str, rate_limit=10):
         self.refresh_token = None
         self.auth_header = {"Authorization": f"Bearer {access_token}"}
         self.default_headers = {
@@ -13,8 +13,10 @@ class Interface:
         self.session = Session()
         self.session.headers.update(self.default_headers)
         self.base_url = base_url
+        self.rate_limit = rate_limit
 
     def call(self, endpoint: str, method: str = "GET", **kwargs) -> Response:
+        sleep(1/self.rate_limit)
 
         url = f"{self.base_url}{endpoint}"
         if "files" in kwargs.keys():

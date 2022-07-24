@@ -5,14 +5,15 @@ from .Files import Files, File
 
 
 class Client:
-    def __init__(self, access_token: str):
+    def __init__(self, access_token: str, rate_limit: str = 10):
         """
         :param access_token: App Access token
         """
 
         interface = Interface(
             access_token=access_token,
-            base_url="https://api.hubspot.com"
+            base_url="https://api.hubspot.com",
+            rate_limit=rate_limit
         )
         self.crm = CRM(interface)
         self.files = Files(interface)
