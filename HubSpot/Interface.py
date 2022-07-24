@@ -1,4 +1,5 @@
 from requests import Session, Response
+from time import sleep
 
 
 class Interface:
