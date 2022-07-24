@@ -25,6 +25,14 @@ class Interface:
         if "files" in kwargs.keys():
             self.session.headers.update(self.default_headers)
 
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except Exception as e:
+            try:
+                print(response.json())
+            except:
+                pass
+
+            raise e
 
         return response
